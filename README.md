@@ -1,6 +1,6 @@
 # Ghosted
 
-<img src="docs/ghosted.jpg" width="446" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs">
+<img src="docs/ghosted.jpg" width="446" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge in a puffy font on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs">
 
 Drifting double-tracking for guitar, vocals or anything else, as a
 VST3 and CLAP plugin for macOS and Windows. It adds two or four delayed
@@ -110,7 +110,7 @@ before starting the host.
   [a fork](https://github.com/starzonmyarmz/nice-plug/tree/patina) that
   adds `ActivateContext::gui_context()`.
 - [Jost](https://github.com/indestructible-type/Jost) by Owen Earl and
-  [Pacifico](https://github.com/googlefonts/Pacifico) by the Pacifico Project Authors,
+  [Modak](https://github.com/EkType/Modak) by Ek Type,
   under the SIL Open Font License (`ui/fonts`).
 - Started from
   [plugin-template](https://github.com/starzonmyarmz/plugin-template).
