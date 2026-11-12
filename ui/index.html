@@ -195,11 +195,14 @@
       transition: scale 200ms;
     }
 
-    &.loose { inline-size: 44px; }
-    &:nth-child(1) { --x: 0; --period: 3.1s; --delay: -0.4s; }
-    &:nth-child(2) { --x: 0.2; --period: 3.7s; --delay: -1.9s; }
-    &:nth-child(3) { --x: 0.8; --period: 3.4s; --delay: -1.1s; }
-    &:nth-child(4) { --x: 1; --period: 4.1s; --delay: -2.6s; }
+        rotate: var(--tilt);
+    &:nth-child(1) { --x: 0; --period: 3.1s; --delay: -0.4s; --tilt: -9deg; }
+    &:nth-child(2) { --x: 0.2; --period: 3.7s; --delay: -1.9s; --tilt: 7deg; inline-size: 40px; }
+    &:nth-child(3) { --x: 0.8; --period: 3.4s; --delay: -1.1s; --tilt: -4deg; inline-size: 50px; }
+    &:nth-child(4) { --x: 1; --period: 4.1s; --delay: -2.6s; --tilt: 12deg; inline-size: 46px; }
+
+    &:nth-child(2) .eyes { translate: -1.5px 0.5px; }
+    &:nth-child(3) .eyes { translate: 1.5px -0.5px; }
   }
 
   [data-voices="2"] .ghost {
@@ -312,7 +315,7 @@
     position: relative;
     display: grid;
     place-items: center;
-    padding: 4px 26px 10px;
+    padding: 12px 26px;
     border-radius: 999px;
     background: linear-gradient(170deg, var(--brass-hi), var(--brass) 45%, var(--brass-lo));
     box-shadow:
@@ -325,6 +328,7 @@
       font-family: "Modak", sans-serif;
       font-size: 46px;
       line-height: 1;
+      text-box: trim-both cap alphabetic;
       color: var(--walnut-lo);
       text-shadow: 0 1px 0 rgb(255 255 255 / 0.5), 0 -1px 0 rgb(0 0 0 / 0.2);
     }
@@ -340,11 +344,17 @@
   }
 
   :is(.ghost, .badge) {
+    & .ink { fill: var(--walnut-lo); }
     & :is(.body, .arm) {
       fill: var(--ghost);
       stroke: var(--walnut-lo);
-      stroke-width: 2.4;
+      stroke-width: 1.5;
       stroke-linejoin: round;
+    }
+    & .grin { display: none; }
+    &.grinning {
+      & .grin { display: inline; }
+      & .gasp { display: none; }
     }
     & :is(.eye, .mouth) { fill: var(--walnut-lo); }
     & .shine { fill: var(--ghost); }
@@ -537,15 +547,23 @@
 </head>
 <body>
 <template id="ghost">
-  <svg viewBox="-2 0 52 50">
+  <svg viewBox="-3 0 54 52">
+    <g class="ink" transform="translate(1.6 2)">
+      <ellipse cx="5" cy="28" rx="5" ry="3.6" transform="rotate(-28 5 28)"/>
+      <ellipse cx="43" cy="28" rx="5" ry="3.6" transform="rotate(28 43 28)"/>
+      <path d="M6 25C6 13 14 5 24 5s18 8 18 20v12a5.5 5.5 0 0 1-9 4.3a5.5 5.5 0 0 1-9 0a5.5 5.5 0 0 1-9 0A5.5 5.5 0 0 1 6 37z"/>
+    </g>
     <ellipse class="arm" cx="5" cy="28" rx="5" ry="3.6" transform="rotate(-28 5 28)"/>
     <ellipse class="arm" cx="43" cy="28" rx="5" ry="3.6" transform="rotate(28 43 28)"/>
     <path class="body" d="M6 25C6 13 14 5 24 5s18 8 18 20v12a5.5 5.5 0 0 1-9 4.3a5.5 5.5 0 0 1-9 0a5.5 5.5 0 0 1-9 0A5.5 5.5 0 0 1 6 37z"/>
     <ellipse class="cheek" cx="12.5" cy="27" rx="3.2" ry="2"/>
     <ellipse class="cheek" cx="35.5" cy="27" rx="3.2" ry="2"/>
-    <g class="eye"><ellipse cx="17" cy="20" rx="3.4" ry="4.4"/><circle class="shine" cx="18.2" cy="18.3" r="1.3"/></g>
-    <g class="eye"><ellipse cx="31" cy="20" rx="3.4" ry="4.4"/><circle class="shine" cx="32.2" cy="18.3" r="1.3"/></g>
-    <ellipse class="mouth" cx="24" cy="28.5" rx="2.4" ry="2.8"/>
+    <g class="eyes">
+      <g class="eye"><ellipse cx="17" cy="20" rx="3.4" ry="4.4"/><circle class="shine" cx="18.2" cy="18.3" r="1.3"/></g>
+      <g class="eye"><ellipse cx="31" cy="20" rx="3.4" ry="4.4"/><circle class="shine" cx="32.2" cy="18.3" r="1.3"/></g>
+    </g>
+    <ellipse class="mouth gasp" cx="24" cy="28.5" rx="2.4" ry="2.8"/>
+    <path class="mouth grin" d="M20 27.2q4 4.6 8 0z"/>
   </svg>
 </template>
 
@@ -554,9 +572,9 @@
     <div class="dial" aria-hidden="true">
       <div class="ghosts">
         <div class="ghost"></div>
-        <div class="ghost loose"></div>
+        <div class="ghost loose grinning"></div>
         <div class="ghost"></div>
-        <div class="ghost loose"></div>
+        <div class="ghost loose grinning"></div>
       </div>
       <div class="scale" id="scale">
         <span class="zone double">DOUBLE</span>
@@ -567,7 +585,7 @@
 
     <div class="middle">
       <div class="grille" aria-hidden="true">
-        <div class="badge">
+        <div class="badge grinning">
           <span class="wordmark">Ghosted</span>
           
         </div>
