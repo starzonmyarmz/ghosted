@@ -41,19 +41,19 @@ fn riff_slapback_matches_golden() {
 }
 
 #[test]
-fn default_controls_match_ghost_takes_defaults() {
-    let ours = Controls::default().settings();
-    let theirs = Settings::default();
+fn default_controls_give_default_settings() {
+    let mapped = Controls::default().settings();
+    let raw = Settings::default();
     let close = |a: f64, b: f64| (a - b).abs() < 1e-9;
-    assert!(close(ours.wet, theirs.wet));
-    assert!(close(ours.base_ms, theirs.base_ms));
-    assert!(close(ours.drift_ms, theirs.drift_ms));
-    assert!(close(ours.drift_hz, theirs.drift_hz));
-    assert!(close(ours.looseness, theirs.looseness));
-    assert!(close(ours.jitter_ms, theirs.jitter_ms));
-    assert!(close(ours.jitter_dur_ms, theirs.jitter_dur_ms));
-    assert!(close(ours.sensitivity, theirs.sensitivity));
-    assert_eq!(ours.voices, theirs.voices);
+    assert!(close(mapped.wet, raw.wet));
+    assert!(close(mapped.base_ms, raw.base_ms));
+    assert!(close(mapped.drift_ms, raw.drift_ms));
+    assert!(close(mapped.drift_hz, raw.drift_hz));
+    assert!(close(mapped.looseness, raw.looseness));
+    assert!(close(mapped.jitter_ms, raw.jitter_ms));
+    assert!(close(mapped.jitter_dur_ms, raw.jitter_dur_ms));
+    assert!(close(mapped.sensitivity, raw.sensitivity));
+    assert_eq!(mapped.voices, raw.voices);
 }
 
 #[test]

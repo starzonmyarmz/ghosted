@@ -19,7 +19,7 @@ pub enum Voices {
 }
 
 /// The front-panel controls. Each knob sets several of the engine's
-/// [`Settings`]; at their defaults they match Ghost Takes' defaults.
+/// [`Settings`].
 #[derive(Clone, Copy, Debug)]
 pub struct Controls {
     /// Wet mix, 0 to 1.
@@ -57,7 +57,7 @@ impl Controls {
     }
 }
 
-/// Ghost Takes' sliders, one for one.
+/// The engine's raw values, which [`Controls`] maps the knobs onto.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Settings {
     pub wet: f64,

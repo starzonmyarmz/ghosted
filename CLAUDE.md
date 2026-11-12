@@ -6,9 +6,9 @@ build and run it. This file has the maintainer details it leaves out.
 ## Layout
 
 - `plugin/src/engine.rs`: all DSP, with no plugin framework types, so tests
-  drive it directly. `Settings` is Ghost Takes' nine sliders one for one;
-  `Controls` is the four knobs and the switch, and `Controls::settings()`
-  maps them.
+  drive it directly. `Settings` holds the engine's raw values;
+  `Controls` is the four knobs and the switch, and `Controls::settings()` maps
+  the knobs onto them.
 - `plugin/src/params.rs`: host parameters, mapped to `Controls`.
 - `plugin/src/editor.rs` and `plugin/src/bridge.rs`: nothing specific to
   Ghosted. The page's size and HTML come from `PAGE` in `lib.rs`, and the
@@ -16,22 +16,20 @@ build and run it. This file has the maintainer details it leaves out.
 - `ui/index.html`: the whole editor, compiled into the plugin, with a mock
   bridge for running it in a browser.
 
-## Matching the JSFX
+## Random drift
 
-The source is `Effects/ghost-takes/ghost_takes.jsfx` in REAPER's resource
-folder. With constant settings the engine matches a line-by-line Python
-transliteration of it to within 1e-8, given the same xorshift64* seed.
-Gliding, the delay slew cap and subnormal flushing are the intended
-differences. Keep the order of random draws (per voice: phase, prev,
-next on reset; next drift target, then jitter target, while processing)
-so that check keeps working.
+Drift and jitter come from a fixed-seed xorshift64* that restarts on
+reset, so renders repeat exactly and the golden tests can compare them.
+Changing the order of random draws (per voice: phase, prev, next on
+reset; next drift target, then jitter target, while processing) changes
+the sound, so it needs new golden renders.
 
 ## Adding a parameter
 
 It has to go in six places:
 
 1. `Controls` in `engine.rs` and its `Default`, plus its mapping in
-   `settings()`. If it exposes a new JSFX value, `Settings` too.
+   `settings()`. If it needs a new engine value, `Settings` too.
 2. `GhostedParams` in `params.rs`, and its `settings()` mapping.
 3. The mock's `specs` in `ui/index.html`. The plugin's bridge picks new
    parameters up automatically, but the browser mock doesn't.

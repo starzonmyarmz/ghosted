@@ -7,9 +7,6 @@ VST3 and CLAP plugin for macOS and Windows. It adds two or four delayed
 copies of the input that wander in time like extra takes, from tight
 ADT out to Abbey Road-style slapback.
 
-It's a port of the Ghost Takes JSFX, with its nine sliders folded into
-four knobs and a switch.
-
 ## How it works
 
 1. The input is summed to mono and fed to four delay lines: a tight and
@@ -38,19 +35,6 @@ instead of clicking.
 
 Drag a knob up or down (hold Shift for fine moves), scroll, or use the
 arrow keys. Double-click a knob to reset it.
-
-Each knob sets several of the JSFX's sliders. At the defaults it
-matches Ghost Takes at its defaults:
-
-| Knob | Ghost Takes sliders |
-|---|---|
-| Haunt | Wet Mix |
-| Distance | Base Delay |
-| Drift | Drift Depth (32 ms × d²), Drift Speed (0.1 Hz × 9^d), Tight/Loose (d) |
-| Spook | Jitter Depth (20 ms × s²), Jitter Duration (15 + 150 ms × s) |
-| Voices | Voices |
-
-Transient Sensitivity stays at 100%.
 
 ## Tips
 
