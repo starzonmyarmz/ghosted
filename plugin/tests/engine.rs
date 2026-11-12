@@ -65,6 +65,14 @@ fn no_haunt_passes_input_through() {
 }
 
 #[test]
+fn stomp_off_passes_input_through() {
+    let input = riff();
+    let (l, r) = render_new(SR, &input, Controls { stomp: false, ..Controls::default() }.settings());
+    assert_eq!(l, input);
+    assert_eq!(r, input);
+}
+
+#[test]
 fn two_voices_are_hard_left_and_right() {
     let input = riff();
     let full_wet = Controls { haunt: 1.0, voices: Voices::Two, ..Controls::default() }.settings();

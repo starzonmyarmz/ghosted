@@ -38,6 +38,10 @@
     --cloth-lo: #8a6236;
     --ghost: #fffdf4;
     --pill: #2b1a0e;
+    --chrome-hi: #fbfbf9;
+    --chrome: #c4c6c8;
+    --chrome-lo: #6d7074;
+    --lamp-off: #6b3a12;
     --label: "Jost", Futura, sans-serif;
   }
 
@@ -145,6 +149,9 @@
       inset 0 0 22px rgb(140 70 10 / 0.55),
       0 0 0 3px var(--bakelite-lo),
       0 2px 0 4px rgb(255 255 255 / 0.6);
+    transition: filter 300ms ease;
+
+    [data-stomp="off"] & { filter: saturate(0.35) brightness(0.72); }
 
     &::after {
       content: "";
@@ -204,6 +211,8 @@
     &:nth-child(2) .eyes { translate: -1.5px 0.5px; }
     &:nth-child(3) .eyes { translate: 1.5px -0.5px; }
   }
+
+  [data-stomp="off"] .ghost { opacity: 0; }
 
   [data-voices="2"] .ghost {
     &.loose { opacity: 0; }
@@ -490,11 +499,80 @@
     box-shadow: none;
   }
 
+  .bottom {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 22px;
+    align-items: start;
+    padding-block-start: 12px;
+  }
+
   .row {
     display: flex;
     justify-content: space-around;
     align-items: start;
-    padding-block-start: 12px;
+  }
+
+  /* ---------- footswitch ---------- */
+
+  .footswitch {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    inline-size: 150px;
+  }
+
+  .lamp {
+    inline-size: 14px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #c98a4a, var(--lamp-off) 65%);
+    box-shadow:
+      0 0 0 3px var(--brass),
+      0 0 0 4px var(--brass-lo),
+      inset 0 -2px 3px rgb(0 0 0 / 0.45);
+    transition: background 80ms, box-shadow 80ms;
+
+    [data-stomp="on"] & {
+      background: radial-gradient(circle at 40% 35%, var(--glow-hot), var(--glow) 45%, var(--glow-edge));
+      box-shadow:
+        0 0 0 3px var(--brass),
+        0 0 0 4px var(--brass-lo),
+        0 0 12px 3px rgb(255 190 90 / 0.75),
+        0 0 26px 8px rgb(255 190 90 / 0.3);
+    }
+  }
+
+  .stomp {
+    position: relative;
+    inline-size: 62px;
+    aspect-ratio: 1;
+    cursor: pointer;
+    background: conic-gradient(var(--chrome-hi), var(--chrome-lo) 60deg, var(--chrome) 120deg, var(--chrome-hi) 180deg, var(--chrome-lo) 240deg, var(--chrome) 300deg, var(--chrome-hi));
+    clip-path: polygon(25% 2%, 75% 2%, 99% 50%, 75% 98%, 25% 98%, 1% 50%);
+
+    &::before, &::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      transition: scale 70ms;
+    }
+
+    &::before {
+      inset: 17%;
+      background: radial-gradient(circle at 38% 30%, var(--chrome-hi), var(--chrome) 42%, var(--chrome-lo) 88%);
+      box-shadow:
+        0 3px 4px rgb(0 0 0 / 0.55),
+        inset 0 0 0 1px rgb(0 0 0 / 0.25),
+        inset 0 -3px 4px rgb(0 0 0 / 0.25);
+    }
+
+    &::after {
+      inset: 30%;
+      background: repeating-radial-gradient(circle, rgb(0 0 0 / 0.08) 0 1px, transparent 1px 3px);
+    }
+
+    &:active::before, &:active::after { scale: 0.94; }
   }
 
   /* ---------- voices keys ---------- */
@@ -596,10 +674,13 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="control" data-knob="haunt" style="--size: 62px"></div>
-      <div class="control" data-knob="drift" style="--size: 62px"></div>
-      <div class="control" data-knob="spook" style="--size: 62px"></div>
+    <div class="bottom">
+      <div class="row">
+        <div class="control" data-knob="haunt" style="--size: 62px"></div>
+        <div class="control" data-knob="drift" style="--size: 62px"></div>
+        <div class="control" data-knob="spook" style="--size: 62px"></div>
+      </div>
+      <div class="footswitch" data-stomp-switch="stomp"></div>
     </div>
   </div>
 </main>
@@ -635,6 +716,8 @@
   function decorate(p) {
     if (p.id === "voices") {
       radio.dataset.voices = p.value >= 0.5 ? "4" : "2";
+    } else if (p.id === "stomp") {
+      radio.dataset.stomp = p.value >= 0.5 ? "on" : "off";
     } else {
       radio.style.setProperty(`--${p.id}`, p.value.toFixed(4));
     }
@@ -784,9 +867,32 @@
     });
   }
 
+  function buildStomp(host) {
+    const id = host.dataset.stompSwitch;
+    const p = params.get(id);
+    if (!p) return;
+
+    const lamp = document.createElement("span");
+    lamp.className = "lamp";
+    const button = document.createElement("button");
+    button.className = "stomp";
+    button.setAttribute("aria-label", p.name);
+    const label = document.createElement("span");
+    label.className = "label";
+    label.textContent = p.name;
+    host.replaceChildren(lamp, button, label);
+
+    views.set(id, (p) => {
+      button.setAttribute("aria-pressed", String(p.value >= 0.5));
+      decorate(p);
+    });
+    button.addEventListener("click", () => gesture(id, () => setParam(id, p.value >= 0.5 ? 0 : 1)));
+  }
+
   function build() {
     document.querySelectorAll("[data-knob]").forEach(buildKnob);
     document.querySelectorAll("[data-keys]").forEach(buildKeys);
+    document.querySelectorAll("[data-stomp-switch]").forEach(buildStomp);
     for (const p of params.values()) views.get(p.id)?.(p);
   }
 
@@ -836,6 +942,7 @@
       { id: "drift", name: "Drift", steps: 0, default: 0.5, text: pct },
       { id: "spook", name: "Spook", steps: 0, default: 0.5, text: pct },
       { id: "voices", name: "Voices", steps: 1, default: 1, options: ["2", "4"], text: (n) => (n >= 0.5 ? "4" : "2") },
+      { id: "stomp", name: "Stomp", steps: 1, default: 1, options: ["Off", "On"], text: (n) => (n >= 0.5 ? "On" : "Off") },
     ];
     const values = Object.fromEntries(specs.map((s) => [s.id, s.default]));
     const send = (msg) => setTimeout(() => window.onPluginMessage(msg));

@@ -7,8 +7,8 @@ build and run it. This file has the maintainer details it leaves out.
 
 - `plugin/src/engine.rs`: all DSP, with no plugin framework types, so tests
   drive it directly. `Settings` holds the engine's raw values;
-  `Controls` is the four knobs and the switch, and `Controls::settings()` maps
-  the knobs onto them.
+  `Controls` is the front panel (four knobs, Voices and the footswitch),
+  and `Controls::settings()` maps it onto them.
 - `plugin/src/params.rs`: host parameters, mapped to `Controls`.
 - `plugin/src/editor.rs` and `plugin/src/bridge.rs`: nothing specific to
   Ghosted. The page's size and HTML come from `PAGE` in `lib.rs`, and the
@@ -33,7 +33,8 @@ It has to go in six places:
 2. `GhostedParams` in `params.rs`, and its `settings()` mapping.
 3. The mock's `specs` in `ui/index.html`. The plugin's bridge picks new
    parameters up automatically, but the browser mock doesn't.
-4. A `data-knob` (or `data-keys`) element in the markup.
+4. A `data-knob` (or `data-keys`, `data-stomp-switch`) element in the
+   markup.
 5. `decorate()` in `ui/index.html`, if the dial art should follow it.
 6. The controls tables in `README.md`.
 
@@ -50,6 +51,8 @@ changed in the sound.
 - The window size is set in two places that must change together:
   `PAGE.size` in `lib.rs`, and `.radio`'s `inline-size` plus the face's
   content height in `ui/index.html`. The cabinet's feet hang 9 px below it.
+- The footswitch's on/off state is `data-stomp` on `.radio`: off dims
+  the dial, darkens the pilot lamp and hides the dial ghosts.
 - Distance's dial marks use the host's skew: normalized =
   sqrt((ms − 5) / 145). Change `distanceAt` if the range or skew changes.
 - The ghosts are stamped from `<template id="ghost">`, not `<use>`, so

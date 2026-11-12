@@ -1,6 +1,6 @@
 # Ghosted
 
-<img src="docs/ghosted.jpg" width="446" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge in a puffy font on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs">
+<img src="docs/ghosted.jpg" width="433" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge in a puffy font on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs, and a chrome footswitch under an amber pilot lamp">
 
 Drifting double-tracking for guitar, vocals or anything else, as a
 VST3 and CLAP plugin for macOS and Windows. It adds two or four delayed
@@ -32,9 +32,11 @@ instead of clicking.
 | Drift | 0–100% | How far (up to 32 ms) and how fast (0.1–0.9 Hz) the ghosts wander, and how far the loose pair strays from the tight pair |
 | Spook | 0–100% | How far (up to 20 ms) and how long (15–165 ms) each pick attack pushes the ghosts early or late |
 | Voices | 2 / 4 | 2: the tight pair, hard left and right. 4: adds a loose, later voice on each side |
+| Stomp | On / Off | The footswitch. Off fades the ghosts out and leaves the dry signal untouched |
 
 Drag a knob up or down (hold Shift for fine moves), scroll, or use the
-arrow keys. Double-click a knob to reset it.
+arrow keys. Double-click a knob to reset it. Click the footswitch to
+turn the ghosts on and off; the pilot lamp shows which.
 
 ## Tips
 

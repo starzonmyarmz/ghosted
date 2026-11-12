@@ -21,6 +21,8 @@ pub struct GhostedParams {
     pub spook: FloatParam,
     #[id = "voices"]
     pub voices: EnumParam<VoicesParam>,
+    #[id = "stomp"]
+    pub stomp: BoolParam,
 }
 
 fn percent(name: &str, default: f32) -> FloatParam {
@@ -45,6 +47,7 @@ impl Default for GhostedParams {
             drift: percent("Drift", c.drift as f32),
             spook: percent("Spook", c.spook as f32),
             voices: EnumParam::new("Voices", VoicesParam::Four),
+            stomp: BoolParam::new("Stomp", c.stomp),
         }
     }
 }
@@ -60,6 +63,7 @@ impl GhostedParams {
                 VoicesParam::Two => Voices::Two,
                 VoicesParam::Four => Voices::Four,
             },
+            stomp: self.stomp.value(),
         }
         .settings()
     }

@@ -33,18 +33,21 @@ pub struct Controls {
     /// or late.
     pub spook: f64,
     pub voices: Voices,
+    /// The footswitch. Off fades the ghosts out; the dry signal always
+    /// passes.
+    pub stomp: bool,
 }
 
 impl Default for Controls {
     fn default() -> Self {
-        Self { haunt: 0.5, distance_ms: 20.0, drift: 0.5, spook: 0.5, voices: Voices::Four }
+        Self { haunt: 0.5, distance_ms: 20.0, drift: 0.5, spook: 0.5, voices: Voices::Four, stomp: true }
     }
 }
 
 impl Controls {
     pub fn settings(&self) -> Settings {
         Settings {
-            wet: self.haunt,
+            wet: if self.stomp { self.haunt } else { 0.0 },
             base_ms: self.distance_ms,
             drift_ms: 32.0 * self.drift * self.drift,
             drift_hz: 0.1 * 9f64.powf(self.drift),
