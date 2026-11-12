@@ -1,9 +1,11 @@
 mod bridge;
 mod editor;
 pub mod engine;
+pub mod params;
 
 use engine::Engine;
 use nice_plug::prelude::*;
+use params::GhostedParams;
 use std::sync::Arc;
 
 static PAGE: editor::Page = editor::Page {
@@ -19,19 +21,9 @@ pub struct Ghosted {
     engine: Engine,
 }
 
-#[derive(Params)]
-struct GhostedParams {
-    #[id = "gain"]
-    gain: FloatParam,
-}
-
 impl Default for Ghosted {
     fn default() -> Self {
-        let gain = FloatParam::new("Gain", util::db_to_gain(0.0), FloatRange::gain_range(-30.0, 30.0))
-            .with_unit(" dB")
-            .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
-            .with_string_to_value(formatters::s2v_f32_gain_to_db());
-        Self { params: Arc::new(GhostedParams { gain }), engine: Engine::new(48_000.0) }
+        Self { params: Arc::new(GhostedParams::default()), engine: Engine::new(48_000.0) }
     }
 }
 
@@ -69,12 +61,11 @@ impl Plugin for Ghosted {
         if self.engine.sample_rate() != buffer_config.sample_rate {
             self.engine = Engine::new(buffer_config.sample_rate);
         }
-        self.engine.reset(self.params.gain.value());
         true
     }
 
     fn reset(&mut self) {
-        self.engine.reset(self.params.gain.value());
+        self.engine.reset();
     }
 
     fn process(
@@ -83,7 +74,7 @@ impl Plugin for Ghosted {
         _aux: &mut AuxiliaryBuffers,
         _context: &mut impl ProcessContext<Self>,
     ) -> ProcessStatus {
-        self.engine.set_gain(self.params.gain.value());
+        self.engine.set(self.params.settings());
         if let [left, right] = buffer.as_slice() {
             self.engine.process(left, right);
         }
@@ -93,15 +84,15 @@ impl Plugin for Ghosted {
 
 impl ClapPlugin for Ghosted {
     const CLAP_ID: &'static str = "com.danmarino.ghosted";
-    const CLAP_DESCRIPTION: Option<&'static str> = Some("A gain knob");
+    const CLAP_DESCRIPTION: Option<&'static str> = Some("Drifting double-tracking ghosts, from ADT to slapback");
     const CLAP_MANUAL_URL: Option<&'static str> = None;
     const CLAP_SUPPORT_URL: Option<&'static str> = None;
-    const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::AudioEffect, ClapFeature::Stereo];
+    const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::AudioEffect, ClapFeature::Delay, ClapFeature::Chorus, ClapFeature::Stereo];
 }
 
 impl Vst3Plugin for Ghosted {
     const VST3_CLASS_ID: [u8; 16] = *b"GhostedDanMarino";
-    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx];
+    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Delay];
 }
 
 nice_export_clap!(Ghosted);
