@@ -1,113 +1,116 @@
-# Plugin template
+# Ghosted
 
-A starting point for VST3 + CLAP plugins in Rust for macOS and Windows,
-built with [nice-plug](https://codeberg.org/RustAudio/nice-plug), with the
-build and release setup from [Patina](https://github.com/starzonmyarmz/patina).
-The plugin itself is a gain knob with a webview editor, there to prove the setup works.
+<img src="docs/ghosted.jpg" width="446" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs">
 
-It pins the same nice-plug fork as Patina
-([starzonmyarmz/nice-plug](https://github.com/starzonmyarmz/nice-plug/tree/patina)),
-which adds `ActivateContext::gui_context()` so MIDI controllers can set
-parameters before the editor opens.
+Drifting double-tracking for guitar, vocals or anything else, as a
+VST3 and CLAP plugin for macOS and Windows. It adds two or four delayed
+copies of the input that wander in time like extra takes, from tight
+ADT out to Abbey Road-style slapback.
 
-## Starting a plugin
+It's a port of the Ghost Takes JSFX, with its nine sliders folded into
+four knobs and a switch.
 
-Click **Use this template** on GitHub, then rename `Example`:
+## How it works
 
-| What | Where |
+1. The input is summed to mono and fed to four delay lines: a tight and
+   a loose voice on each side. In 2-voice mode only the tight pair
+   plays, hard left and right.
+2. Each voice's delay time drifts with smoothed random motion, which
+   also bends its pitch a little, like a second take that isn't quite
+   in time.
+3. A transient detector catches pick attacks and kicks each voice early
+   or late for a moment, so the ghosts don't land exactly together.
+4. Each voice has its own band-pass EQ, so the copies sound like
+   different takes rather than the same one repeated.
+
+Knob moves glide, and fast Distance changes dip the pitch like tape
+instead of clicking.
+
+## Controls
+
+| Control | Range | What it does |
+|---|---|---|
+| Haunt | 0–100% | Wet mix. The dry signal turns down as the ghosts come up |
+| Distance | 5–150 ms | Base delay. Under about 40 ms it thickens like double tracking; above 80 ms it's a slapback |
+| Drift | 0–100% | How far (up to 32 ms) and how fast (0.1–0.9 Hz) the ghosts wander, and how far the loose pair strays from the tight pair |
+| Spook | 0–100% | How far (up to 20 ms) and how long (15–165 ms) each pick attack pushes the ghosts early or late |
+| Voices | 2 / 4 | 2: the tight pair, hard left and right. 4: adds a loose, later voice on each side |
+
+Drag a knob up or down (hold Shift for fine moves), scroll, or use the
+arrow keys. Double-click a knob to reset it.
+
+Each knob sets several of the JSFX's sliders. At the defaults it
+matches Ghost Takes at its defaults:
+
+| Knob | Ghost Takes sliders |
 |---|---|
-| Crate name (`example`) | `plugin/Cargo.toml`, `bundler.toml`, `CRATE` in both workflows, `crate` in `scripts/install.sh` |
-| Display name (`Example`) | `bundler.toml`, `NAME` and `PAGE.title` in `plugin/src/lib.rs`, `PLUGIN` in both workflows, `INSTALL.txt`, `<title>` in `ui/index.html` |
-| Dev URL env var (`EXAMPLE_UI_URL`) | `PAGE.dev_url_var` in `plugin/src/lib.rs` |
-| Plugin IDs | `CLAP_ID` and `VST3_CLASS_ID` (exactly 16 bytes) in `plugin/src/lib.rs`. These must be unique, and must never change after a release. |
-| Description, features, subcategories | `ClapPlugin` and `Vst3Plugin` in `plugin/src/lib.rs` |
+| Haunt | Wet Mix |
+| Distance | Base Delay |
+| Drift | Drift Depth (32 ms × d²), Drift Speed (0.1 Hz × 9^d), Tight/Loose (d) |
+| Spook | Jitter Depth (20 ms × s²), Jitter Duration (15 + 150 ms × s) |
+| Voices | Voices |
+
+Transient Sensitivity stays at 100%.
+
+## Tips
+
+- For classic ADT, keep Distance under 30 ms and Haunt around 50%.
+- For a '50s slapback on a vocal or a rockabilly guitar, set Voices to 2,
+  Distance to 90–130 ms, and Drift low.
+- Turn Spook down on strummed parts, where every strum is a transient
+  and the ghosts never settle.
+
+## Installing
+
+Download the zip from
+[Releases](https://github.com/starzonmyarmz/ghosted/releases) and follow
+`INSTALL.txt` inside it.
 
 ## Building
 
 ```sh
-cargo xtask bundle example --release       # target/bundled/Example.{vst3,clap}
+cargo xtask bundle ghosted --release       # target/bundled/Ghosted.{vst3,clap}
 scripts/install.sh                         # bundle, sign ad hoc and install on macOS
-scripts/clap-validator.sh target/bundled/Example.clap
+scripts/clap-validator.sh target/bundled/Ghosted.clap
 ```
 
 ## Tests
 
-The DSP lives in `plugin/src/engine.rs`, apart from the host plumbing in
-`lib.rs`, so `cargo test` can run it offline. The plugin passes parameter
-values to the engine once per block.
+`cargo test` runs the engine offline: a guitar DI rendered against
+stored stereo golden renders (double-tracked and slapback), plus
+synthetic tests for the controls, gliding and sample rates. After an
+intended change to the sound, rerun with `BLESS=1` to rewrite the
+renders, and listen to them before committing.
 
-`plugin/tests/support` has helpers for checking sound, not just numbers:
+## Working on the UI
 
-- `read_wav` loads test input, such as a guitar DI checked into
-  `plugin/tests/di`.
-- `check_golden` compares a render with `plugin/tests/golden/<name>.wav`.
-  After an intended change to the sound, rerun with `BLESS=1` to rewrite
-  the golden files, then listen to them before committing.
-- `tone` makes a test note with a few harmonics, for checks that don't
-  need a recording.
-
-`plugin/tests/engine.rs` shows the pattern: render through the engine
-in host-sized blocks, then compare with a golden file or assert on the
-output directly.
-
-## CI and releases
-
-- `check.yml` runs on pushes to main and on PRs: the tests and clap-validator
-  on macOS, and clap-validator on the Windows build.
-- `release.yml` runs on `vX.Y.Z` tags. The tag must match `version` in the
-  root `Cargo.toml`. It builds a universal macOS bundle and a Windows bundle,
-  validates both, and publishes `Example-X.Y.Z.zip` with `INSTALL.txt`. A
-  version with a suffix (`1.0.0-beta.1`) becomes a prerelease.
-
-To release: bump `version` in `Cargo.toml`, commit, then
-`git tag vX.Y.Z && git push origin main vX.Y.Z`.
-
-## Upgrading nice-plug
-
-Rebase the fork's `patina` branch onto newer nice-plug, push it, and update
-the `rev` in `plugin/Cargo.toml` and `xtask/Cargo.toml`.
-
-## The editor
-
-The editor is a [wry](https://github.com/tauri-apps/wry) webview in a
-[baseview](https://github.com/RustAudio/baseview) window, showing
-`ui/index.html`, which is compiled into the plugin.
-
-- `plugin/src/editor.rs` hosts the page. `PAGE` in `lib.rs` is its only
-  config: title, size, HTML, the background shown until the page
-  paints, and an env var that loads the page from a dev server instead.
-- `plugin/src/bridge.rs` connects the page to any `#[derive(Params)]`
-  struct through `param_map()`. The page sends `ready`, then `begin`,
-  `set` and `end` with normalized values; the plugin answers with
-  `init` (each parameter's id, name, step count, options and default)
-  and `values` (normalized value and the plugin's formatted text).
-- Host keys go to the page only while something on it has focus, so
-  shortcuts like play keep working.
-
-The starter page builds a knob for every parameter, or a switch for
-two-step ones, so a new plugin has a working UI right away. Replace it
-with a hand-laid page once the controls settle;
-[Halfwit](https://github.com/starzonmyarmz/halfwit)'s pedal is an
-example.
-
-Without the plugin, the page runs against a mock bridge in
-`ui/index.html`. Keep the mock's parameters in step with the plugin's,
-then work on the page in a browser:
+The editor is a webview showing `ui/index.html`, which is compiled into
+the plugin. Without the plugin, the page runs against a mock, so you can
+work on it in a browser:
 
 ```sh
 cd ui && python3 -m http.server 8765    # open http://127.0.0.1:8765
 ```
 
-Set `EXAMPLE_UI_URL` to that URL before starting the host to load it
-live in the plugin.
+To load the page live in the plugin, set `GHOSTED_UI_URL` to that URL
+before starting the host.
 
-Fonts can't load from the network in the plugin: embed them as base64
-`@font-face` data URLs, and keep the font file and its license in
-`ui/fonts`.
+## CI and releases
 
-## Adding a standalone app
+- `check.yml` runs on pushes to main and on PRs: the tests and
+  clap-validator on macOS, and clap-validator on the Windows build.
+- `release.yml` runs on `vX.Y.Z` tags. The tag must match `version` in
+  the root `Cargo.toml`. It builds a universal macOS bundle and a
+  Windows bundle, validates both, and publishes `Ghosted-X.Y.Z.zip`
+  with `INSTALL.txt`.
 
-Copy it from Patina (`app/`). It isn't here yet because it's built
-around Patina's parameters, and the reusable shape should come from the
-second plugin that needs one. Guitar plugins will also need audio input
-selection, which Patina's app doesn't have.
+## Built with
+
+- [nice-plug](https://codeberg.org/RustAudio/nice-plug), pinned to
+  [a fork](https://github.com/starzonmyarmz/nice-plug/tree/patina) that
+  adds `ActivateContext::gui_context()`.
+- [Jost](https://github.com/indestructible-type/Jost) by Owen Earl and
+  [Pacifico](https://github.com/googlefonts/Pacifico) by the Pacifico Project Authors,
+  under the SIL Open Font License (`ui/fonts`).
+- Started from
+  [plugin-template](https://github.com/starzonmyarmz/plugin-template).
