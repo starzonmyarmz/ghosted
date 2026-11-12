@@ -7,36 +7,36 @@ use nice_plug::prelude::*;
 use std::sync::Arc;
 
 static PAGE: editor::Page = editor::Page {
-    title: "Example",
+    title: "Ghosted",
     size: (360, 220),
     html: include_str!("../../ui/index.html"),
     background: (27, 26, 25, 255),
-    dev_url_var: "EXAMPLE_UI_URL",
+    dev_url_var: "GHOSTED_UI_URL",
 };
 
-pub struct Example {
-    params: Arc<ExampleParams>,
+pub struct Ghosted {
+    params: Arc<GhostedParams>,
     engine: Engine,
 }
 
 #[derive(Params)]
-struct ExampleParams {
+struct GhostedParams {
     #[id = "gain"]
     gain: FloatParam,
 }
 
-impl Default for Example {
+impl Default for Ghosted {
     fn default() -> Self {
         let gain = FloatParam::new("Gain", util::db_to_gain(0.0), FloatRange::gain_range(-30.0, 30.0))
             .with_unit(" dB")
             .with_value_to_string(formatters::v2s_f32_gain_to_db(2))
             .with_string_to_value(formatters::s2v_f32_gain_to_db());
-        Self { params: Arc::new(ExampleParams { gain }), engine: Engine::new(48_000.0) }
+        Self { params: Arc::new(GhostedParams { gain }), engine: Engine::new(48_000.0) }
     }
 }
 
-impl Plugin for Example {
-    const NAME: &'static str = "Example";
+impl Plugin for Ghosted {
+    const NAME: &'static str = "Ghosted";
     const VENDOR: &'static str = "Dan Marino";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
@@ -91,18 +91,18 @@ impl Plugin for Example {
     }
 }
 
-impl ClapPlugin for Example {
-    const CLAP_ID: &'static str = "com.danmarino.example";
+impl ClapPlugin for Ghosted {
+    const CLAP_ID: &'static str = "com.danmarino.ghosted";
     const CLAP_DESCRIPTION: Option<&'static str> = Some("A gain knob");
     const CLAP_MANUAL_URL: Option<&'static str> = None;
     const CLAP_SUPPORT_URL: Option<&'static str> = None;
     const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::AudioEffect, ClapFeature::Stereo];
 }
 
-impl Vst3Plugin for Example {
-    const VST3_CLASS_ID: [u8; 16] = *b"ExampleDanMarino";
+impl Vst3Plugin for Ghosted {
+    const VST3_CLASS_ID: [u8; 16] = *b"GhostedDanMarino";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx];
 }
 
-nice_export_clap!(Example);
-nice_export_vst3!(Example);
+nice_export_clap!(Ghosted);
+nice_export_vst3!(Ghosted);
