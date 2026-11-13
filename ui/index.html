@@ -320,6 +320,19 @@
     }
   }
 
+  .version {
+    position: absolute;
+    inset-block-end: 8px;
+    inset-inline-end: 14px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--walnut-lo);
+    opacity: 0.7;
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.25);
+    pointer-events: none;
+  }
+
   .badge {
     position: relative;
     display: grid;
@@ -416,6 +429,8 @@
     border-radius: 50%;
     touch-action: none;
     cursor: ns-resize;
+    /* On the knob, not the skirt, so it stays put while the skirt turns. */
+    box-shadow: 0 5px 6px rgb(40 20 5 / 0.55), 0 1px 0 rgb(40 20 5 / 0.6);
 
     &:focus-visible { outline-offset: 12px; }
 
@@ -430,7 +445,6 @@
       background:
         radial-gradient(circle at 50% 50%, transparent 62%, rgb(0 0 0 / 0.45) 100%),
         repeating-conic-gradient(var(--knob) 0 7deg, var(--knob-hi) 7deg 10deg, var(--knob-lo) 10deg 15deg);
-      box-shadow: 0 5px 6px rgb(40 20 5 / 0.55), 0 1px 0 rgb(40 20 5 / 0.6);
     }
 
     & .cap {
@@ -665,8 +679,9 @@
       <div class="grille" aria-hidden="true">
         <div class="badge grinning">
           <span class="wordmark">Ghosted</span>
-          
+
         </div>
+        <span class="version" id="version"></span>
       </div>
       <div class="tuning">
         <div class="control" data-knob="distance" style="--size: 92px"></div>
@@ -914,6 +929,8 @@
     switch (msg.type) {
       case "key": return forwardKey(msg);
       case "init":
+        // The plugin appends its version after the page; the browser mock has none.
+        document.getElementById("version").textContent = `v${window.GHOSTED_VERSION ?? "dev"}`;
         params.clear();
         msg.params.forEach((p) => params.set(p.id, { ...p, value: p.default, text: "" }));
         build();
