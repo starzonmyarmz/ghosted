@@ -57,6 +57,8 @@ changed in the sound.
   sqrt((ms − 5) / 145). Change `distanceAt` if the range or skew changes.
 - The ghosts are stamped from `<template id="ghost">`, not `<use>`, so
   page CSS reaches their eyes and mouths.
+- The version, from the root `Cargo.toml`, is printed small at the
+  bottom centre of the cream face, in the dial's ink.
 - The local preview server (`python3 -m http.server`) gets cached by the
   browser. Add a query string like `?v=2` after each edit.
 - After a visible UI change, retake `docs/ghosted.jpg`: capture the full

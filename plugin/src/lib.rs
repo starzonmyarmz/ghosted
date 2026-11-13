@@ -11,14 +11,8 @@ use std::sync::Arc;
 static PAGE: editor::Page = editor::Page {
     title: "Ghosted",
     size: (600, 590),
-    // The page reads its version from this global, set by the script
-    // appended after it.
-    html: concat!(
-        include_str!("../../ui/index.html"),
-        "<script>window.GHOSTED_VERSION = \"",
-        env!("CARGO_PKG_VERSION"),
-        "\";</script>",
-    ),
+    html: include_str!("../../ui/index.html"),
+    version: env!("CARGO_PKG_VERSION"),
     background: (28, 22, 17, 255),
     dev_url_var: "GHOSTED_UI_URL",
 };
