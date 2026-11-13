@@ -61,9 +61,10 @@ changed in the sound.
   bottom centre of the cream face, in the dial's ink.
 - The local preview server (`python3 -m http.server`) gets cached by the
   browser. Add a query string like `?v=2` after each edit.
-- After a visible UI change, retake `docs/ghosted.jpg`: capture the full
-  window at device scale 2 with reduced motion, save it as a JPEG 852 px
-  tall, and set the README `<img>` width to half the JPEG's width.
+- After a visible UI change, retake `docs/ghosted.jpg` with the `screenshot`
+  skill, so the PR shows it and the README's `alt` text stays right. The
+  Screenshot workflow also retakes it on main, but can't update the
+  `alt` text.
 
 ## Releases
 
