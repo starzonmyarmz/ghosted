@@ -1,6 +1,6 @@
 # Ghosted
 
-<img src="docs/ghosted.png" width="413" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge in a puffy font on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs, and a chrome footswitch under an amber pilot lamp">
+<img src="docs/ghosted.png" width="434" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge in a puffy font on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs, and a chrome footswitch under an amber pilot lamp">
 
 Drifting double-tracking for guitar, vocals or anything else, as a
 VST3 and CLAP plugin for macOS and Windows. It adds two or four delayed
