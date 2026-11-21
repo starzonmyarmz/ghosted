@@ -56,6 +56,7 @@ Download the zip from
 
 ```sh
 cargo xtask bundle ghosted --release       # target/bundled/Ghosted.{vst3,clap}
+scripts/bump.sh [patch|minor|major]        # bump the version (patch by default)
 scripts/install.sh                         # bundle, sign ad hoc and install on macOS
 scripts/clap-validator.sh target/bundled/Ghosted.clap
 ```
