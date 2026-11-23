@@ -1,11 +1,12 @@
 # Ghosted
 
+Drifting double-tracking ghosts, from ADT to slapback: a VST3 and CLAP plugin
+
 <img src="docs/ghosted.png" width="434" alt="Ghosted, a vintage walnut and cream bakelite radio with an amber dial full of ghosts, a brass Ghosted badge in a puffy font on the speaker grille, a brass Distance tuning knob, 2 and 4 ghost band keys, and Haunt, Drift and Spook knobs, and a chrome footswitch under an amber pilot lamp">
 
-Drifting double-tracking for guitar, vocals or anything else, as a
-VST3 and CLAP plugin for macOS and Windows. It adds two or four delayed
-copies of the input that wander in time like extra takes, from tight
-ADT out to Abbey Road-style slapback.
+For guitar, vocals or anything else, on macOS and Windows. It adds two
+or four delayed copies of the input that wander in time like extra
+takes, from tight ADT out to Abbey Road-style slapback.
 
 ## How it works
 
@@ -56,10 +57,13 @@ Download the zip from
 
 ```sh
 cargo xtask bundle ghosted --release       # target/bundled/Ghosted.{vst3,clap}
-scripts/bump.sh [patch|minor|major]        # bump the version (patch by default)
-scripts/install.sh                         # bundle, sign ad hoc and install on macOS
+scripts/install.sh                         # bundle, sign ad hoc and install on macOS as X.Y.Z-dev+<sha>
 scripts/clap-validator.sh target/bundled/Ghosted.clap
+cargo fmt --all && cargo clippy --workspace --all-targets -- -D warnings
 ```
+
+Local installs call themselves `X.Y.Z-dev+<sha>` on the panel, so you
+can tell which build the host loaded. Only releases change the version.
 
 ## Tests
 
@@ -85,12 +89,33 @@ before starting the host.
 
 ## CI and releases
 
-- `check.yml` runs on pushes to main and on PRs: the tests and
-  clap-validator on macOS, and clap-validator on the Windows build.
+Versions follow [SemVer](https://semver.org), and the commits since the
+last release decide the bump:
+
+| Commits since the last release | Bump |
+|---|---|
+| a `!` or `BREAKING CHANGE:` footer | major (minor before 1.0) |
+| `feat` | minor |
+| `fix`, `perf`, `revert` | patch |
+| anything else | no release |
+
+`scripts/release` shows the computed bump and the changelog, then
+commits, tags `vX.Y.Z` and pushes. Pass `patch`, `minor`, `major` or an
+exact version to override, and `--dry-run` to only look. It refuses to
+release `feat`, `fix` or `perf` commits while `[Unreleased]` in
+[CHANGELOG.md](CHANGELOG.md) is empty.
+
+- `check.yml` runs on pushes to main and on PRs: `cargo fmt --check`
+  and clippy, the tests and clap-validator on macOS, and clap-validator
+  on the Windows build.
+- `changelog.yml` runs on PRs and fails when a `feat`, `fix` or `perf`
+  commit doesn't touch `CHANGELOG.md`. Add the `no-changelog` label or
+  put `[skip changelog]` in the subject to opt out.
 - `release.yml` runs on `vX.Y.Z` tags. The tag must match `version` in
-  the root `Cargo.toml`. It builds a universal macOS bundle and a
-  Windows bundle, validates both, and publishes `Ghosted-X.Y.Z.zip`
-  with `INSTALL.txt`.
+  the root `Cargo.toml`. It tests, builds a universal macOS bundle and a
+  Windows bundle, validates both, and publishes `ghosted-X.Y.Z.zip`
+  with `INSTALL.txt` and `SHA256SUMS`, using the version's changelog
+  section as the release notes.
 - `screenshot.yml` runs on pushes to main that touch `ui/`, the version
   or `plugin/src/lib.rs`. It retakes `docs/ghosted.png` with
   `scripts/screenshot.sh`, sets its width in the README, and commits both

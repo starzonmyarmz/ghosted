@@ -1,0 +1,19 @@
+_commit: b602e5b
+_src_path: /Users/marino/Code/project-kit
+app_id: com.iamdanielmarino.ghosted
+author: Daniel Marino
+description: 'Drifting double-tracking ghosts, from ADT to slapback: a VST3 and CLAP
+    plugin'
+design_doc: true
+display_name: Ghosted
+name: ghosted
+oss_community: false
+owner: starzonmyarmz
+public: true
+ships:
+- github-release
+stack: vst-plugin
+starter: false
+voice_doc: false
+vst3_class_id: GhostedDanielMar
+year: 2026
