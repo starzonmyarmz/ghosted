@@ -33,7 +33,7 @@ impl Default for Ghosted {
 
 impl Plugin for Ghosted {
     const NAME: &'static str = "Ghosted";
-    const VENDOR: &'static str = "Dan Marino";
+    const VENDOR: &'static str = "Daniel Marino";
     const URL: &'static str = "";
     const EMAIL: &'static str = "";
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -87,7 +87,7 @@ impl Plugin for Ghosted {
 }
 
 impl ClapPlugin for Ghosted {
-    const CLAP_ID: &'static str = "com.danmarino.ghosted";
+    const CLAP_ID: &'static str = "com.iamdanielmarino.ghosted";
     const CLAP_DESCRIPTION: Option<&'static str> = Some("Drifting double-tracking ghosts, from ADT to slapback");
     const CLAP_MANUAL_URL: Option<&'static str> = None;
     const CLAP_SUPPORT_URL: Option<&'static str> = None;
@@ -95,7 +95,7 @@ impl ClapPlugin for Ghosted {
 }
 
 impl Vst3Plugin for Ghosted {
-    const VST3_CLASS_ID: [u8; 16] = *b"GhostedDanMarino";
+    const VST3_CLASS_ID: [u8; 16] = *b"GhostedDanielMar";
     const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[Vst3SubCategory::Fx, Vst3SubCategory::Delay];
 }
 

@@ -7,6 +7,9 @@ What changed for people using Ghosted, newest first. Code-only work stays in the
 ### Added
 - The panel shows the plugin's version, small at the bottom of the cream face.
 
+### Changed
+- Ghosted has a new plugin ID, and its vendor is now Daniel Marino. Hosts see it as a different plugin from 0.1.0, so projects that used 0.1.0 need Ghosted added again and its settings redone.
+
 ### Fixed
 - Knob shadows stay still while the knobs turn.
 
