@@ -91,7 +91,8 @@ impl ClapPlugin for Ghosted {
     const CLAP_DESCRIPTION: Option<&'static str> = Some("Drifting double-tracking ghosts, from ADT to slapback");
     const CLAP_MANUAL_URL: Option<&'static str> = None;
     const CLAP_SUPPORT_URL: Option<&'static str> = None;
-    const CLAP_FEATURES: &'static [ClapFeature] = &[ClapFeature::AudioEffect, ClapFeature::Delay, ClapFeature::Chorus, ClapFeature::Stereo];
+    const CLAP_FEATURES: &'static [ClapFeature] =
+        &[ClapFeature::AudioEffect, ClapFeature::Delay, ClapFeature::Chorus, ClapFeature::Stereo];
 }
 
 impl Vst3Plugin for Ghosted {
