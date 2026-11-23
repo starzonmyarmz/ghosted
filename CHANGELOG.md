@@ -4,6 +4,8 @@ What changed for people using Ghosted, newest first. Code-only work stays in the
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-23
+
 ### Added
 - The panel shows the plugin's version, small at the bottom of the cream face.
 
