@@ -116,10 +116,10 @@ release `feat`, `fix` or `perf` commits while `[Unreleased]` in
   Windows bundle, validates both, and publishes `ghosted-X.Y.Z.zip`
   with `INSTALL.txt` and `SHA256SUMS`, using the version's changelog
   section as the release notes.
-- `screenshot.yml` runs on pushes to main that touch `ui/`, the version
-  or `plugin/src/lib.rs`. It retakes `docs/ghosted.png` with
-  `scripts/screenshot.sh`, sets its width in the README, and commits both
-  if the image changed.
+- Nothing on GitHub takes screenshots. `scripts/release` retakes
+  `docs/ghosted.png` through `scripts/pre-release.sh` before the release
+  commit, so the shot shows the new version. Between releases, retake it
+  with `scripts/screenshot.sh` and commit it with the UI change it shows.
 
 ## Built with
 
