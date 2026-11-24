@@ -1,4 +1,4 @@
-_commit: f903bed
+_commit: b753eee
 _src_path: gh:starzonmyarmz/project-kit
 app_id: com.iamdanielmarino.ghosted
 author: Daniel Marino
@@ -6,10 +6,12 @@ description: 'Drifting double-tracking ghosts, from ADT to slapback: a VST3 and 
     plugin'
 design_doc: true
 display_name: Ghosted
+goldens: true
 name: ghosted
 oss_community: false
 owner: starzonmyarmz
 public: true
+screenshot: true
 ships:
 - github-release
 stack: vst-plugin
